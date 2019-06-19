@@ -41,19 +41,25 @@ while True:
             username_pwd_flag = 1
 
         s.send(username.encode()) 
+
+        while(s.recv(1024).decode()!='ack'):
+            pass
+        
+
+
         list_of_files = s.recv(1024).decode()
+        s.send('ack'.encode())
         print(list_of_files.strip())
         download_file = input('Select the file to download:')
         s.send(download_file.encode())
         
-        with open('client_files/'+download_file+' '+str(datetime.now()),'wb') as f:
-            while True:
-                data = s.recv(CHUNK_SIZE)
-                print(data)
-                if not data:
-                    break
-                f.write(data)
+        while(s.recv(1024).decode()!='ack'):
+            pass
 
+        with open('/home/rohit/Viasat/client_files/'+download_file+' '+str(datetime.now()),'wb') as f:
+            data = s.recv(CHUNK_SIZE)
+            f.write(data)
+        f.close()
     elif(choice == '3'):
         #global username_pwd_flag
         if(username_pwd_flag == 0):
@@ -69,7 +75,12 @@ while True:
 
         username_file = username+' '+upload_file
 
-        #s.send(username_file.encode())
+        s.send(username_file.encode())
+
+        while(s.recv(1024).decode()!='ack'):
+            pass
+        
+
         with open('/home/rohit/Viasat/client_files/'+upload_file,'r') as f:
             data = f.readlines()
             str1 = ''
