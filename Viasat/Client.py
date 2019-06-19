@@ -2,7 +2,7 @@ import socket
 import subprocess
 from datetime import datetime
 s = socket.socket()
-port = 8083
+port = 8085
 CHUNK_SIZE = 1024
 s.connect(('',port))
 username_pwd_flag = 0
@@ -26,8 +26,9 @@ while True:
 
     if(choice== '1'):
         command = input("Enter the command:")
-        s.send(command.encode()) 
-        print(s.recv(1024).decode())
+        s.send(command.encode())
+        print('\nCommand Result')
+        print(s.recv(1024).decode()+'\n')
 
     elif(choice=='2'):
 

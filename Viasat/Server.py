@@ -5,7 +5,7 @@ import subprocess
 from threading import Lock,Thread
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 threads = []
-port = 8083
+port = 8085
 s.bind(('0.0.0.0',port))
 CHUNK_SIZE = 1024
 lock = Lock()
@@ -24,8 +24,12 @@ class ClientHandler(Thread):
             if(choice == '1'):
                 command = self.socket.recv(1024).decode()
                 command = command.split()
-                command_result = subprocess.check_output(command)
-                self.socket.send(command_result)
+                status,command_result = subprocess.getstatusoutput(command)
+
+                if(status == 0):
+                    self.socket.send(command_result.encode())
+                else:
+                    self.socket.send('Invalid command'.encode())
 
             elif(choice == '2'):
             
