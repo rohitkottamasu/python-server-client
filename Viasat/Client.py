@@ -2,7 +2,7 @@ import socket
 import subprocess
 from datetime import datetime
 s = socket.socket()
-port = 8084
+port = 8083
 CHUNK_SIZE = 1024
 s.connect(('',port))
 username_pwd_flag = 0
@@ -69,19 +69,19 @@ while True:
 
         username_file = username+' '+upload_file
 
-        s.send(username_file.encode())
-        with open('client_files/'+upload_file,'rb') as f:
-            data = f.read(CHUNK_SIZE)
-            print(data)
+        #s.send(username_file.encode())
+        with open('/home/rohit/Viasat/client_files/'+upload_file,'r') as f:
+            data = f.readlines()
+            str1 = ''
+            data = str1.join(data)
             print('Sending File..')
-            while data:
-                s.send(data)
-                data = f.read(CHUNK_SIZE)
+            s.send(data.encode())
+        
+        f.close()
 
-    elif(choice ==-1):
+    elif(choice =='-1'):
         exit()
 
 
-        f.close()
 
-    s.close()
+s.close()

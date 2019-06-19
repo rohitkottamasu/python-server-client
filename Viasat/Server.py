@@ -5,7 +5,7 @@ import subprocess
 from threading import Lock,Thread
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 threads = []
-port = 8084
+port = 8083
 s.bind(('0.0.0.0',port))
 CHUNK_SIZE = 1024
 lock = Lock()
@@ -32,7 +32,7 @@ class ClientHandler(Thread):
             list_of_files = subprocess.check_output(['ls','/home/rohit/Viasat/server_files/'+username])
             self.socket.send(list_of_files)
             file_name = self.socket.recv(1024).decode()
-            with open('server_files/'+username+'/'+file_name,'rb') as f:
+            with open('/home/rohit/Viasat/server_files/'+username+'/'+file_name,'rb') as f:
                 data = f.read(CHUNK_SIZE)
                 print(data)
                 print('Sending File..')
@@ -44,23 +44,19 @@ class ClientHandler(Thread):
         elif(self.choice == '3'):
 
             
-            username_file = self.socket.recv(1024).decode()
-            username = username_file.split()[0]
-            file_name = username_file.split()[1]
+            #username_file = self.socket.recv(1024).decode()
+            #username = username_file.split()[0]
+            #file_name = username_file.split()[1]
 
             try:
-                subprocess.check_output(['mkdir','/home/rohit/Viasat/server_files/'+username])
+                subprocess.check_output(['mkdir','/home/rohit/Viasat/server_files/root'])
             except:
                 print('Directory already exists')
             
 
-            with open('server_files/'+username+ '/'+file_name,'wb') as f:
-                while True:
-                    data = self.socket.recv(CHUNK_SIZE)
-                    print(data)
-                    if not data:
-                        break
-                    f.write(data)
+            with open('/home/rohit/Viasat/server_files/root/uploaded_file.txt','wb') as f:
+               data = self.socket.recv(1024)
+               f.write(data)
             f.close()
 
 
